@@ -11,7 +11,7 @@ import json
 load_dotenv()
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents, description="Bot des MERCENERS", help_command=None)
-guild = bot.get_guild(813039372680691722)
+#guild = bot.get_guild(813039372680691722)
 
 @bot.command()
 async def commande(ctx):
