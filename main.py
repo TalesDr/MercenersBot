@@ -81,6 +81,7 @@ async def liste(ctx):
     f.close()
 
 
+
 #verifie que celui qui parle n'est pas le bot
     if ctx.author == bot.user:
         return
