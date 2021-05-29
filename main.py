@@ -1,10 +1,12 @@
 from datetime import datetime
+import csv
 import time
 import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import numpy as np
+import json
 
 #variables globales
 
@@ -39,10 +41,15 @@ async def on_message(message):
         await message.channel.send("💩")
 
 #enregistre dans un fichier la liste des message avec date et id membre
+    with open("files/message.json", "a") as f:
+        temp = {int(time.time()) : message.author.id}
+        json.dump(temp, f)
+        await bot.process_commands(message)
+    f.close()
     with open("files/stats.csv", "a") as f:
-        now = datetime.now()
         f.write(f"{int(time.time())}, {message.author.id}\n")
         await bot.process_commands(message)
+    f.close()
 
 @bot.event
 async def on_ready():
@@ -55,9 +62,24 @@ async def list_id(ctx):
     guild = bot.get_guild(813039372680691722)
     with open("files/member.csv", "w") as f:
         for member in guild.members:
-                f.write(f"{member.id},\n")
+            #json.dump(member.display_name, f)
+            f.write(f"{member.display_name},\n")
     await ctx.send("Voici la liste")
     await ctx.send(file=discord.File('files/member.csv'))
+    f.close()
+
+#renvoie la listes des membres du serveur en json
+@bot.command()
+async def liste(ctx):
+    guild = bot.get_guild(813039372680691722)
+    with open("files/member.json", "w") as f:
+        for member in guild.members:
+            temp ={member.id : member.display_name}
+            json.dump(temp, f)
+    await ctx.send("Voici la liste")
+    await ctx.send(file=discord.File('files/member.json'))
+    f.close()
+
 
 #verifie que celui qui parle n'est pas le bot
     if ctx.author == bot.user:
@@ -78,7 +100,7 @@ def unique(list1):
 
 #fonction pour afficher les membres inactifs depuis 30 jours
 @bot.command()
-async def purge(ctx):
+async def ghost(ctx):
     #hour = int(time.time()) - 3600
     #day = int(time.time()) - 86400
     month = int(time.time()) - 2629743
