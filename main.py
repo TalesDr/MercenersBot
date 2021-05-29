@@ -1,5 +1,3 @@
-from datetime import datetime
-import csv
 import time
 import os
 import discord
@@ -22,10 +20,9 @@ async def commande(ctx):
         colour=discord.Colour.orange()
     )
     embed.set_author(name='Liste des commandes')
-    embed.add_field(name="!purge", value="Renvoi un CSV avec les ID des membres inactifs", inline=False)
-    embed.add_field(name="!list-id", value="Renvoi un CSV avec les ID des membres", inline=True)
+    embed.add_field(name="!ghost", value="Renvoi un CSV avec les ID des membres inactifs", inline=False)
+    embed.add_field(name="!list-id", value="Renvoi un CSV avec la liste des membres", inline=True)
     embed.add_field(name="!membres", value="Affiche le nombre de membres sur le serveur", inline=False)
-
     await ctx.send(embed=embed)
 
 @bot.event
@@ -46,7 +43,7 @@ async def on_message(message):
         json.dump(temp, f)
         await bot.process_commands(message)
     f.close()
-    with open("files/stats.csv", "a") as f:
+    with open("files/message.csv", "a") as f:
         f.write(f"{int(time.time())}, {message.author.id}\n")
         await bot.process_commands(message)
     f.close()
@@ -114,7 +111,7 @@ async def ghost(ctx):
     with open("files/member.csv", 'r') as g:
         for line in g:
             membres.append(line[0:18])
-    with open("files/stats.csv", "r") as f:
+    with open("files/message.csv", "r") as f:
         for row in f:
             date = row[0:10]
             if int(date) > month:
