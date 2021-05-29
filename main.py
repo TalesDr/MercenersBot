@@ -60,27 +60,12 @@ async def on_ready():
 @bot.command()
 async def list_id(ctx):
     guild = bot.get_guild(813039372680691722)
-    with open("files/member.csv", "w") as f:
+    with open("files/member.csv", "w",encoding='utf-8') as f:
         for member in guild.members:
-            #json.dump(member.display_name, f)
-            f.write(f"{member.display_name},\n")
+            f.write(f"{member.display_name},{member.id}\n")
     await ctx.send("Voici la liste")
     await ctx.send(file=discord.File('files/member.csv'))
     f.close()
-
-#renvoie la listes des membres du serveur en json
-@bot.command()
-async def liste(ctx):
-    guild = bot.get_guild(813039372680691722)
-    with open("files/member.json", "w") as f:
-        for member in guild.members:
-            temp ={member.id : member.display_name}
-            json.dump(temp, f)
-    await ctx.send("Voici la liste")
-    await ctx.send(file=discord.File('files/member.json'))
-    f.close()
-
-
 
 #verifie que celui qui parle n'est pas le bot
     if ctx.author == bot.user:
